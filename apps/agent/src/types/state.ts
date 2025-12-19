@@ -34,7 +34,7 @@ export interface CustomerData {
  * Intent classification result
  */
 export interface IntentResult {
-  category: 
+  category:
     | "billing_issue"
     | "service_outage"
     | "cancellation"
@@ -71,7 +71,11 @@ export interface ReplyResult {
  */
 export const CustomerSupportStateAnnotation = Annotation.Root({
   ...CopilotKitStateAnnotation.spec,
-  
+  customers: Annotation<any[]>({
+    reducer: (_, value) => value,
+    default: () => [],
+  }),
+
   // Customer lookup
   currentCustomer: Annotation<{
     id: string;
@@ -81,19 +85,19 @@ export const CustomerSupportStateAnnotation = Annotation.Root({
     reducer: (_, value) => value,
     default: () => ({ id: "", found: false, data: null }),
   }),
-  
+
   // Intent classification
   intent: Annotation<IntentResult | null>({
     reducer: (_, value) => value,
     default: () => null,
   }),
-  
+
   // Reply generation
   reply: Annotation<ReplyResult | null>({
     reducer: (_, value) => value,
     default: () => null,
   }),
-  
+
   // Escalation decision
   escalation: Annotation<EscalationResult | null>({
     reducer: (_, value) => value,

@@ -1,508 +1,312 @@
-// "use client";
-
-// import { useCoAgent, useCopilotAction } from "@copilotkit/react-core";
-// import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
-// import { useState } from "react";
-
-// export default function CopilotKitPage() {
-//   const [themeColor, setThemeColor] = useState("#6366f1");
-
-//   // 🪁 Frontend Actions: https://docs.copilotkit.ai/guides/frontend-actions
-//   useCopilotAction({
-//     name: "setThemeColor",
-//     description: "Set the theme color of the page.",
-//     parameters: [{
-//       name: "themeColor",
-//       description: "The theme color to set. Make sure to pick nice colors.",
-//       required: true,
-//     }],
-//     handler({ themeColor }) {
-//       setThemeColor(themeColor);
-//     },
-//   });
-
-//   return (
-//     <main style={{ "--copilot-kit-primary-color": themeColor } as CopilotKitCSSProperties}>
-//       <YourMainContent themeColor={themeColor} />
-//       <CopilotSidebar
-//         clickOutsideToClose={false}
-//         defaultOpen={true}
-//         labels={{
-//           title: "Popup Assistant",
-//           initial: "👋 Hi, there! You're chatting with an agent. This agent comes with a few tools to get you started.\n\nFor example you can try:\n- **Frontend Tools**: \"Set the theme to orange\"\n- **Shared State**: \"Write a proverb about AI\"\n- **Generative UI**: \"Get the weather in SF\"\n\nAs you interact with the agent, you'll see the UI update in real-time to reflect the agent's **state**, **tool calls**, and **progress**."
-//         }}
-//       />
-//     </main>
-//   );
-// }
-
-// // State of the agent, make sure this aligns with your agent's state.
-// type AgentState = {
-//   proverbs: string[];
-// }
-
-// function YourMainContent({ themeColor }: { themeColor: string }) {
-//   // 🪁 Shared State: https://docs.copilotkit.ai/coagents/shared-state
-//   const {state, setState} = useCoAgent<AgentState>({
-//     name: "starterAgent",
-//     initialState: {
-//       proverbs: [
-//         "CopilotKit may be new, but its the best thing since sliced bread.",
-//       ],
-//     },
-//   })
-
-//   // 🪁 Frontend Actions: https://docs.copilotkit.ai/coagents/frontend-actions
-//   useCopilotAction({
-//     name: "addProverb",
-//     description: "Add a proverb to the list.",
-//     parameters: [{
-//       name: "proverb",
-//       description: "The proverb to add. Make it witty, short and concise.",
-//       required: true,
-//     }],
-//     handler: ({ proverb }) => {
-//       setState((prevState) => ({
-//         ...prevState,
-//         proverbs: [...(prevState?.proverbs || []), proverb],
-//       }));
-//     },
-//   }, [setState]);
-
-//   //🪁 Generative UI: https://docs.copilotkit.ai/coagents/generative-ui
-//   useCopilotAction({
-//     name: "getWeather",
-//     description: "Get the weather for a given location.",
-//     available: "disabled",
-//     parameters: [
-//       { name: "location", type: "string", required: true },
-//     ],
-//     render: ({ args }) => {
-//       return <WeatherCard location={args.location} themeColor={themeColor} />
-//     },
-//   });
-
-//   return (
-//     <div
-//       style={{ backgroundColor: themeColor }}
-//       className="h-screen w-screen flex justify-center items-center flex-col transition-colors duration-300"
-//     >
-//       <div className="bg-white/20 backdrop-blur-md p-8 rounded-2xl shadow-xl max-w-2xl w-full">
-//         <h1 className="text-4xl font-bold text-white mb-2 text-center">Proverbs</h1>
-//         <p className="text-gray-200 text-center italic mb-6">This is a demonstrative page, but it could be anything you want! 🪁</p>
-//         <hr className="border-white/20 my-6" />
-//         <div className="flex flex-col gap-3">
-//           {state.proverbs?.map((proverb, index) => (
-//             <div
-//               key={index}
-//               className="bg-white/15 p-4 rounded-xl text-white relative group hover:bg-white/20 transition-all"
-//             >
-//               <p className="pr-8">{proverb}</p>
-//               <button
-//                 onClick={() => setState({
-//                   ...state,
-//                   proverbs: state.proverbs?.filter((_, i) => i !== index),
-//                 })}
-//                 className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity
-//                   bg-red-500 hover:bg-red-600 text-white rounded-full h-6 w-6 flex items-center justify-center"
-//               >
-//                 ✕
-//               </button>
-//             </div>
-//           ))}
-//         </div>
-//         {state.proverbs?.length === 0 && <p className="text-center text-white/80 italic my-8">
-//           No proverbs yet. Ask the assistant to add some!
-//         </p>}
-//       </div>
-//     </div>
-//   );
-// }
-
-// // Simple sun icon for the weather card
-// function SunIcon() {
-//   return (
-//     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-yellow-200">
-//       <circle cx="12" cy="12" r="5" />
-//       <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" strokeWidth="2" stroke="currentColor" />
-//     </svg>
-//   );
-// }
-
-// // Weather card component where the location and themeColor are based on what the agent
-// // sets via tool calls.
-// function WeatherCard({ location, themeColor }: { location?: string, themeColor: string }) {
-//   return (
-//     <div
-//     style={{ backgroundColor: themeColor }}
-//     className="rounded-xl shadow-xl mt-6 mb-4 max-w-md w-full"
-//   >
-//     <div className="bg-white/20 p-4 w-full">
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <h3 className="text-xl font-bold text-white capitalize">{location}</h3>
-//           <p className="text-white">Current Weather</p>
-//         </div>
-//         <SunIcon />
-//       </div>
-
-//       <div className="mt-4 flex items-end justify-between">
-//         <div className="text-3xl font-bold text-white">70°</div>
-//         <div className="text-sm text-white">Clear skies</div>
-//       </div>
-
-//       <div className="mt-4 pt-4 border-t border-white">
-//         <div className="grid grid-cols-3 gap-2 text-center">
-//           <div>
-//             <p className="text-white text-xs">Humidity</p>
-//             <p className="text-white font-medium">45%</p>
-//           </div>
-//           <div>
-//             <p className="text-white text-xs">Wind</p>
-//             <p className="text-white font-medium">5 mph</p>
-//           </div>
-//           <div>
-//             <p className="text-white text-xs">Feels Like</p>
-//             <p className="text-white font-medium">72°</p>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   </div>
-//   );
-// }
-// =======================================
-
 "use client";
 
 import { useState } from "react";
-import { CopilotChat } from "@copilotkit/react-ui";
-import { useCopilotAction, useCoAgent } from "@copilotkit/react-core";
-
-// State type for our customer support agent
-type CustomerSupportState = {
-  currentCustomer: {
-    id: string;
-    found: boolean;
-    data: any;
-  } | null;
-  intent: {
-    category: string;
-    urgency: string;
-    confidence: number;
-  } | null;
-  reply: {
-    message: string;
-    suggestedActions: string[];
-  } | null;
-  escalation: {
-    required: boolean;
-    reason: string;
-    ticketId?: string;
-    assignedTo?: string;
-    priority: number;
-  } | null;
-};
+import {
+  FiUser,
+  FiX,
+  FiCheck,
+} from "react-icons/fi";
+import { RxAvatar } from "react-icons/rx";
+import { CustomerProvider, useCustomers } from "@/hooks/CustomerContext";
+import { CopilotSidebar } from "@copilotkit/react-ui"; 
+import "@copilotkit/react-ui/styles.css"; 
+import { WelcomeScreen } from "@/components/WelcomeScreen";
 
 export default function CustomerSupportPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <CustomerSupportInterface />
+    <CustomerProvider>
+      <div className="flex h-screen overflow-hidden">
+        <MainApp />
+        <CopilotSidebar
+          defaultOpen={true}
+          clickOutsideToClose={false}
+          labels={{
+            title: "Telecom Support Assistant",
+            initial:
+              "Hi! 👋 I'm here to assist you with your telecom support needs. I can help you manage your account, troubleshoot issues, or provide information about your services.",
+          }}
+          suggestions={[
+            {
+              title: "Check my services",
+              message: "Hi, I want to know about my services for customer ID: 5575-GNVDE",
+            },
+            {
+              title: "Report an outage",
+              message: "My internet has been down for 2 hours! Customer ID: 7590-VHVEG",
+            },
+          ]}
+        />
+      </div>
+    </CustomerProvider>
+  );
+}
+
+function MainApp() {
+  const {
+    customers,
+    getCustomerByCustomerId,
+    addAddon,
+    removeAddon,
+    updateCustomer,
+  } = useCustomers();
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
+  const selectedCustomer = selectedCustomerId
+    ? getCustomerByCustomerId(selectedCustomerId)
+    : null;
+
+  return (
+    <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+      {/* Top Header with Account Dropdown */}
+      <TopHeader
+        customers={customers}
+        selectedCustomerId={selectedCustomerId}
+        onCustomerChange={setSelectedCustomerId}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto p-6">
+        <CustomerCard
+          customer={selectedCustomer}
+          addAddon={addAddon}
+          removeAddon={removeAddon}
+          updateCustomer={updateCustomer}
+        />
+      </div>
     </div>
   );
 }
 
-function CustomerSupportInterface() {
-  // Connect to the multi-agent system
-  const { state } = useCoAgent<CustomerSupportState>({
-    name: "starterAgent",
-    initialState: {
-      currentCustomer: null,
-      intent: null,
-      reply: null,
-      escalation: null,
+function TopHeader({ customers, selectedCustomerId, onCustomerChange }: any) {
+  return (
+    <header className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm">
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-gray-800">Telecom Support</h1>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <label className="text-sm font-medium text-gray-600">
+          Customer Account:
+        </label>
+        <select
+          value={selectedCustomerId}
+          onChange={(e) => onCustomerChange(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[280px]"
+        >
+          <option value="">Select Customer Account</option>
+          {customers.map((customer: any) => (
+            <option key={customer.id} value={customer.customerID}>
+              {customer.customerID} - {customer.gender} ({customer.tenure}{" "}
+              months)
+            </option>
+          ))}
+        </select>
+      </div>
+    </header>
+  );
+}
+
+function CustomerCard({
+  customer,
+  addAddon,
+  removeAddon,
+  updateCustomer,
+}: {
+  customer: any;
+  addAddon: any;
+  removeAddon: any;
+  updateCustomer: any;
+}) {
+  if (!customer) {
+    return <WelcomeScreen />
+  }
+
+  const data = customer;
+  const monthlyCharges = parseFloat(customer.MonthlyCharges);
+
+  const activeServices = [
+    data.InternetService !== "No" && {
+      name: `${data.InternetService} Internet`,
+      included: true,
     },
-  });
+    data.PhoneService === "Yes" && { name: "Phone Service", included: true },
+    data.OnlineSecurity === "Yes" && {
+      name: "Online Security",
+      included: true,
+    },
+    data.OnlineBackup === "Yes" && { name: "Online Backup", included: true },
+    data.DeviceProtection === "Yes" && {
+      name: "Device Protection",
+      included: true,
+    },
+    data.TechSupport === "Yes" && { name: "Tech Support", included: true },
+    data.StreamingTV === "Yes" && { name: "Streaming TV", included: true },
+    data.StreamingMovies === "Yes" && {
+      name: "Streaming Movies",
+      included: true,
+    },
+  ].filter(Boolean);
+
+  const inactiveServices = [
+    data.PhoneService === "No" && { name: "Phone Service" },
+    data.OnlineSecurity === "No" && { name: "Online Security" },
+    data.OnlineBackup === "No" && { name: "Online Backup" },
+    data.DeviceProtection === "No" && { name: "Device Protection" },
+    data.TechSupport === "No" && { name: "Tech Support" },
+    data.StreamingTV === "No" && { name: "Streaming TV" },
+    data.StreamingMovies === "No" && { name: "Streaming Movies" },
+  ].filter(Boolean);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">
-          🎯 Customer Support Assistant
-        </h1>
-        <p className="text-gray-600">
-          Multi-Agent AI System for Telecom Customer Support
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Chat Interface */}
+    <div className="max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Left Card: Wide Horizontal (Black) - 2 columns */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-              <h2 className="text-xl font-semibold text-white">
-                💬 Chat with Support
-              </h2>
-            </div>
-            <div className="h-[600px]">
-              <CopilotChat
-                className="h-full"
-                labels={{
-                  title: "How can we help you today?",
-                  initial: "Hello! I'm your AI support assistant. You can ask me about:\n\n• Billing issues\n• Service problems\n• Account upgrades\n• Technical support\n\nPlease provide your Customer ID for personalized help!",
-                }}
-              />
+          <div className="bg-black rounded-3xl shadow-xl p-8 text-white">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                {/* Header */}
+                <h2 className="text-2xl font-bold mb-2">Current Plan</h2>
+                <p className="text-sm text-gray-400 mb-6">
+                  Customer ID:{" "}
+                  <span className="font-mono font-semibold text-gray-300">
+                    {data.customerID}
+                  </span>
+                </p>
+
+                {/* Price Display */}
+                <div className="mb-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold">$</span>
+                    <span className="text-6xl font-extrabold">
+                      {Math.floor(monthlyCharges)}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-3xl font-bold">
+                        .{(monthlyCharges % 1).toFixed(2).slice(2)}
+                      </span>
+                      <span className="text-sm font-medium text-gray-400">
+                        /month
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="flex gap-8 text-sm">
+                  <p className="text-gray-400">
+                    Contract Type:{" "}
+                    <span className="text-white font-medium">
+                      {data.Contract}
+                    </span>
+                  </p>
+                  <p className="text-gray-400">
+                    Customer Since:{" "}
+                    <span className="text-white font-medium">
+                      Jan{" "}
+                      {new Date().getFullYear() -
+                        Math.floor(parseInt(data.tenure) / 12)}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Avatar Icon */}
+              <div className="flex items-center justify-center ml-6">
+                <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center">
+                  {data.gender === "Male" ? (
+                    <RxAvatar className="w-16 h-16 text-black" />
+                  ) : data.gender === "Female" ? (
+                    <RxAvatar className="w-16 h-16 text-black" />
+                  ) : (
+                    <FiUser className="w-16 h-16 text-black" />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Status Dashboard */}
-        <div className="space-y-6">
-          {/* Customer Info Card */}
-          <CustomerInfoCard customer={state.currentCustomer} />
+        {/* Right Card: Tall Vertical (White) - 1 column */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-3xl shadow-xl p-8">
+            {/* Active Services */}
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+              Active Services
+            </h3>
 
-          {/* Intent Card */}
-          <IntentCard intent={state.intent} />
+            <div className="space-y-3 mb-8">
+              {activeServices.map((service: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-3 group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <FiCheck
+                          className="w-4 h-4 text-white"
+                          strokeWidth={3}
+                        />
+                      </div>
+                      <span className="text-sm text-gray-700 font-medium">
+                        {service.name}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-          {/* Escalation Card */}
-          <EscalationCard escalation={state.escalation} />
+            {/* Inactive Services */}
+            {inactiveServices.length > 0 && (
+              <>
+                <div className="border-t border-gray-200 pt-6">
+                  <h3 className="text-xl font-bold text-gray-500 mb-6">
+                    Inactive Services
+                  </h3>
 
-          {/* Suggested Actions Card */}
-          {state.reply?.suggestedActions && (
-            <SuggestedActionsCard actions={state.reply.suggestedActions} />
-          )}
-        </div>
-      </div>
+                  <div className="space-y-3">
+                    {inactiveServices.map((service: any, index: number) => {
+                      const serviceName = service.name.replace(" ", "");
 
-      {/* How It Works Section */}
-      <div className="mt-12">
-        <HowItWorks />
-      </div>
-    </div>
-  );
-}
-
-// Customer Info Card Component
-function CustomerInfoCard({ customer }: { customer: any }) {
-  if (!customer?.found) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-gray-300">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2 flex items-center">
-          <span className="mr-2">👤</span> Customer Info
-        </h3>
-        <p className="text-gray-500 text-sm">
-          No customer identified yet. Please provide your Customer ID.
-        </p>
-      </div>
-    );
-  }
-
-  const data = customer.data;
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-        <span className="mr-2">👤</span> Customer Profile
-      </h3>
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Customer ID:</span>
-          <span className="font-semibold text-gray-800">{data.customerID}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Service:</span>
-          <span className="font-semibold text-gray-800">{data.InternetService}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Monthly Charges:</span>
-          <span className="font-semibold text-gray-800">${data.MonthlyCharges}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Contract:</span>
-          <span className="font-semibold text-gray-800">{data.Contract}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Tenure:</span>
-          <span className="font-semibold text-gray-800">{data.tenure} months</span>
-        </div>
-        {data.Churn === "Yes" && (
-          <div className="mt-3 p-2 bg-red-50 rounded border border-red-200">
-            <span className="text-red-700 text-xs font-semibold">⚠️ CHURN RISK</span>
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between gap-3 group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="shrink-0 w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                              <FiX
+                                className="w-4 h-4 text-white"
+                                strokeWidth={3}
+                              />
+                            </div>
+                            <span className="text-sm text-gray-400 font-medium">
+                              {service.name}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
-    </div>
-  );
-}
 
-// Intent Card Component
-function IntentCard({ intent }: { intent: any }) {
-  if (!intent) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-gray-300">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2 flex items-center">
-          <span className="mr-2">🎯</span> Intent Analysis
+      <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+          You Can also Ask
         </h3>
-        <p className="text-gray-500 text-sm">Waiting for message...</p>
-      </div>
-    );
-  }
-
-  const urgencyColors = {
-    low: "border-green-500 bg-green-50",
-    medium: "border-yellow-500 bg-yellow-50",
-    high: "border-red-500 bg-red-50",
-  };
-
-  const urgencyEmojis = {
-    low: "🟢",
-    medium: "🟡",
-    high: "🔴",
-  };
-
-  return (
-    <div className={`bg-white rounded-xl shadow-lg p-6 border-l-4 ${urgencyColors[intent.urgency as keyof typeof urgencyColors]}`}>
-      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-        <span className="mr-2">🎯</span> Intent Analysis
-      </h3>
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Category:</span>
-          <span className="font-semibold text-gray-800">
-            {intent.category.replace(/_/g, " ")}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Urgency:</span>
-          <span className="font-semibold text-gray-800">
-            {urgencyEmojis[intent.urgency as keyof typeof urgencyEmojis]} {intent.urgency.toUpperCase()}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Confidence:</span>
-          <span className="font-semibold text-gray-800">
-            {(intent.confidence * 100).toFixed(0)}%
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Escalation Card Component
-function EscalationCard({ escalation }: { escalation: any }) {
-  if (!escalation) {
-    return null;
-  }
-
-  if (!escalation.required) {
-    return (
-      <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2 flex items-center">
-          <span className="mr-2">✅</span> Status
-        </h3>
-        <p className="text-green-600 text-sm font-semibold">
-          AI can handle this request
+        <p className="text-sm text-gray-600 leading-relaxed">
+          Ask the AI assistant to <strong>switch to Fiber Optic or DSL</strong>, 
+          <strong> enable paperless billing</strong>, 
+          <strong> change payment method</strong>, or 
+          <strong> add/remove services</strong> like streaming, security, and tech support.
         </p>
       </div>
-    );
-  }
-
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-        <span className="mr-2">🚨</span> Escalated
-      </h3>
-      <div className="space-y-2 text-sm">
-        <div className="p-3 bg-red-50 rounded-lg">
-          <p className="text-red-700 font-semibold mb-1">Ticket Created</p>
-          <p className="text-red-600 text-xs">{escalation.ticketId}</p>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Assigned To:</span>
-          <span className="font-semibold text-gray-800 capitalize">
-            {escalation.assignedTo} Team
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Priority:</span>
-          <span className="font-semibold text-gray-800">
-            {escalation.priority === 1 ? "🔴 High" : escalation.priority === 2 ? "🟡 Medium" : "🟢 Low"}
-          </span>
-        </div>
-        <p className="text-gray-600 text-xs mt-2 italic">{escalation.reason}</p>
-      </div>
-    </div>
-  );
-}
-
-// Suggested Actions Card Component
-function SuggestedActionsCard({ actions }: { actions: string[] }) {
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-        <span className="mr-2">💡</span> Suggested Actions
-      </h3>
-      <div className="space-y-2">
-        {actions.map((action, index) => (
-          <button
-            key={index}
-            className="w-full text-left px-4 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-sm text-blue-700 font-medium transition-colors"
-          >
-            {action}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// How It Works Section
-function HowItWorks() {
-  return (
-    <div className="bg-white rounded-2xl shadow-xl p-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        🤖 How the Multi-Agent System Works
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <AgentStep
-          number="1"
-          icon="🎯"
-          title="Intent Agent"
-          description="Classifies your message and determines urgency level"
-        />
-        <AgentStep
-          number="2"
-          icon="👤"
-          title="Customer Lookup"
-          description="Finds your account information from the database"
-        />
-        <AgentStep
-          number="3"
-          icon="💬"
-          title="Reply Agent"
-          description="Generates personalized response based on your context"
-        />
-        <AgentStep
-          number="4"
-          icon="🚨"
-          title="Escalation Agent"
-          description="Decides if human agent is needed and creates tickets"
-        />
-      </div>
-    </div>
-  );
-}
-
-function AgentStep({ number, icon, title, description }: any) {
-  return (
-    <div className="text-center">
-      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 font-bold mb-3">
-        {number}
-      </div>
-      <div className="text-3xl mb-2">{icon}</div>
-      <h3 className="font-semibold text-gray-800 mb-2">{title}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
     </div>
   );
 }
