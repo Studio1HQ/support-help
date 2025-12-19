@@ -1,6 +1,12 @@
-# CopilotKit <> LangGraph Starter
+# Multi-Agent Telecom Support System
 
-This is a starter template for building AI agents using [LangGraph](https://www.langchain.com/langgraph) and [CopilotKit](https://copilotkit.ai). It provides a modern Next.js application with an integrated LangGraph agent to be built on top of.
+This is an intelligent customer support application built with [CopilotKit](https://copilotkit.ai) and [LangGraph](https://www.langchain.com/langgraph). It features a multi-agent AI system that handles customer inquiries, manages telecom services, and automatically escalates complex issues to human agents.
+
+The system includes four specialized agents:
+- **Intent Agent** - Classifies customer messages and determines urgency
+- **Customer Lookup Agent** - Retrieves customer profiles and service details
+- **Reply Agent** - Generates personalized responses based on context
+- **Escalation Agent** - Routes complex issues to appropriate support teams
 
 This project is organized as a monorepo using [Turborepo](https://turbo.build) and [pnpm workspaces](https://pnpm.io/workspaces).
 
@@ -82,14 +88,6 @@ The LangGraph agent code is in `apps/agent/src/`.
 - [CopilotKit Documentation](https://docs.copilotkit.ai) - Explore CopilotKit's capabilities
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/) - Learn more about LangGraph and its features
 - [Next.js Documentation](https://nextjs.org/docs) - Learn about Next.js features and API
-
-## Contributing
-
-Feel free to submit issues and enhancement requests! This starter is designed to be easily extensible.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Troubleshooting
 
