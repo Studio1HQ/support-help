@@ -8,6 +8,9 @@ The system includes four specialized agents:
 - **Reply Agent** - Generates personalized responses based on context
 - **Escalation Agent** - Routes complex issues to appropriate support teams
 
+https://github.com/user-attachments/assets/49a9dd02-046b-49af-8631-88fcabfd1e19
+
+
 This project is organized as a monorepo using [Turborepo](https://turbo.build) and [pnpm workspaces](https://pnpm.io/workspaces).
 
 ## Project Structure
