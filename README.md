@@ -1,3 +1,5 @@
+![Demo](./copilotkit.gif)
+
 # Multi-Agent Telecom Support System
 
 This is an intelligent customer support application built with [CopilotKit](https://copilotkit.ai) and [LangGraph](https://www.langchain.com/langgraph). It features a multi-agent AI system that handles customer inquiries, manages telecom services, and automatically escalates complex issues to human agents.
